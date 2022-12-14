@@ -80,6 +80,14 @@ bool analyse(Element* ele){
             flist[2*i+1] /= 2;
         }
     }
+    //根据F判断模型是否平衡,否则分析失败
+    double fx=0,fy=0;
+    for(int i=0,j=1;j<row;i+=2,j+=2){
+        fx += flist[i];
+        fy += flist[j];
+    }
+    if(fx!=0 || fy!=0)  return false;
+    //判断完成
     for(int i=0;i<row;i++){
         K[i][8] = flist[i];
     }
