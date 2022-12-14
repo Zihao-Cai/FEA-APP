@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>bird.jpg</file>
+        <file>cartoon.jpg</file>
+        <file>sun.jpg</file>
+        <file>tree.jpg</file>
+        <file>pureback.webp</file>
+        <file>confused.png</file>
+        <file>emoticon.png</file>
+        <file>mod.jpg</file>
+    </qresource>
+</RCC>
