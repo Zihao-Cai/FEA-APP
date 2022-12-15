@@ -144,12 +144,13 @@ bool analyse(Element* ele){
     for(int j=0;j<3;j++){
         B0[0][2*j] = ratio0*ele[0].eq_b[j];B0[0][2*j+1] = 0;
         B0[1][2*j] = 0;B0[1][2*j+1] = ratio0*ele[0].eq_c[j];
-        B0[2][2*j] = ratio0*ele[0].eq_c[j];B0[0][2*j+1] = ratio0*ele[0].eq_b[j];
+        B0[2][2*j] = ratio0*ele[0].eq_c[j];B0[2][2*j+1] = ratio0*ele[0].eq_b[j];
         B1[0][2*j] = ratio1*ele[1].eq_b[j];B1[0][2*j+1] = 0;
         B1[1][2*j] = 0;B1[1][2*j+1] = ratio1*ele[1].eq_c[j];
-        B1[2][2*j] = ratio1*ele[1].eq_c[j];B1[0][2*j+1] = ratio1*ele[1].eq_b[j];
+        B1[2][2*j] = ratio1*ele[1].eq_c[j];B1[2][2*j+1] = ratio1*ele[1].eq_b[j];
     }
     //B矩阵构造完成，调用求解函数求解应变关系//
+
     double** temp_epson0 = new double*[3]();
     double** temp_epson1 = new double*[3]();
     double** delta0 = new double*[6]();
@@ -205,6 +206,7 @@ bool analyse(Element* ele){
         D1[2][2] = (1-ele[1].v)/2*ra1;
         //D矩阵构造完成//
         //求解区域内部的应力关系
+
         matrix_multiplication(D0,temp_epson0,3,3,3,1,temp_sigma0);
         matrix_multiplication(D1,temp_epson1,3,3,3,1,temp_sigma1);
         for(int i=0;i<3;i++){

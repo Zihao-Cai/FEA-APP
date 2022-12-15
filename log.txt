@@ -1,0 +1,1752 @@
+commit 45a3c27185df7cef0b17f8a5bbb31d9861acdba9
+Author: czh <2428198050@qq.com>
+Date:   Thu Dec 15 01:04:02 2022 +0800
+
+    no info
+
+diff --git a/FEA-APP.pro b/FEA-APP.pro
+index 3f6b942..deff429 100644
+--- a/FEA-APP.pro
++++ b/FEA-APP.pro
+@@ -1,8 +1,8 @@
+-QT       += core gui testlib
++QT       += core gui
+ 
+ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+ 
+-CONFIG += c++11 release
++CONFIG += c++11
+ 
+ # The following define makes your compiler emit warnings if you use
+ # any Qt feature that has been marked deprecated (the exact warnings
+
+commit 4bde1a65ede894429a029c98f508088548ec2b4c
+Author: czh <2428198050@qq.com>
+Date:   Thu Dec 15 00:48:33 2022 +0800
+
+    none info
+
+diff --git a/FEA-APP.pro b/FEA-APP.pro
+index c2ae010..3f6b942 100644
+--- a/FEA-APP.pro
++++ b/FEA-APP.pro
+@@ -2,7 +2,7 @@ QT       += core gui testlib
+ 
+ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+ 
+-CONFIG += c++11
++CONFIG += c++11 release
+ 
+ # The following define makes your compiler emit warnings if you use
+ # any Qt feature that has been marked deprecated (the exact warnings
+diff --git a/analyse.cpp b/analyse.cpp
+index 3497c71..cd4924c 100644
+--- a/analyse.cpp
++++ b/analyse.cpp
+@@ -80,6 +80,14 @@ bool analyse(Element* ele){
+             flist[2*i+1] /= 2;
+         }
+     }
++    //根据F判断模型是否平衡,否则分析失败
++    double fx=0,fy=0;
++    for(int i=0,j=1;j<row;i+=2,j+=2){
++        fx += flist[i];
++        fy += flist[j];
++    }
++    if(fx!=0 || fy!=0)  return false;
++    //判断完成
+     for(int i=0;i<row;i++){
+         K[i][8] = flist[i];
+     }
+
+commit 2b08d3d165d5d605da884d2154a183dfd6427eb2
+Author: czh <2428198050@qq.com>
+Date:   Thu Dec 15 00:13:02 2022 +0800
+
+    only once to push all!
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..fab7372
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,73 @@
++# This file is used to ignore files which are generated
++# ----------------------------------------------------------------------------
++
++*~
++*.autosave
++*.a
++*.core
++*.moc
++*.o
++*.obj
++*.orig
++*.rej
++*.so
++*.so.*
++*_pch.h.cpp
++*_resource.rc
++*.qm
++.#*
++*.*#
++core
++!core/
++tags
++.DS_Store
++.directory
++*.debug
++Makefile*
++*.prl
++*.app
++moc_*.cpp
++ui_*.h
++qrc_*.cpp
++Thumbs.db
++*.res
++*.rc
++/.qmake.cache
++/.qmake.stash
++
++# qtcreator generated files
++*.pro.user*
++
++# xemacs temporary files
++*.flc
++
++# Vim temporary files
++.*.swp
++
++# Visual Studio generated files
++*.ib_pdb_index
++*.idb
++*.ilk
++*.pdb
++*.sln
++*.suo
++*.vcproj
++*vcproj.*.*.user
++*.ncb
++*.sdf
++*.opensdf
++*.vcxproj
++*vcxproj.*
++
++# MinGW generated files
++*.Debug
++*.Release
++
++# Python byte code
++*.pyc
++
++# Binaries
++# --------
++*.dll
++*.exe
++
+diff --git a/FEA-APP.pro b/FEA-APP.pro
+new file mode 100644
+index 0000000..c2ae010
+--- /dev/null
++++ b/FEA-APP.pro
+@@ -0,0 +1,48 @@
++QT       += core gui testlib
++
++greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
++
++CONFIG += c++11
++
++# The following define makes your compiler emit warnings if you use
++# any Qt feature that has been marked deprecated (the exact warnings
++# depend on your compiler). Please consult the documentation of the
++# deprecated API in order to know how to port your code away from it.
++DEFINES += QT_DEPRECATED_WARNINGS
++
++# You can also make your code fail to compile if it uses deprecated APIs.
++# In order to do so, uncomment the following line.
++# You can also select to disable deprecated APIs only up to a certain version of Qt.
++#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
++
++SOURCES += \
++    analyse.cpp \
++    element.cpp \
++    main.cpp \
++    mainwindow.cpp \
++    matrix_decode.cpp \
++    matrix_multi.cpp \
++    node.cpp \
++    opration.cpp
++
++HEADERS += \
++    analyse.h \
++    element.h \
++    mainwindow.h \
++    matrix_decode.h \
++    matrix_multi.h \
++    node.h \
++    opration.h
++
++FORMS += \
++    mainwindow.ui
++
++# Default rules for deployment.
++qnx: target.path = /tmp/$${TARGET}/bin
++else: unix:!android: target.path = /opt/$${TARGET}/bin
++!isEmpty(target.path): INSTALLS += target
++
++RESOURCES += \
++    Images.qrc
++
++
+diff --git a/Images.qrc b/Images.qrc
+new file mode 100644
+index 0000000..9bff1ec
+--- /dev/null
++++ b/Images.qrc
+@@ -0,0 +1,12 @@
++<RCC>
++    <qresource prefix="/">
++        <file>bird.jpg</file>
++        <file>cartoon.jpg</file>
++        <file>sun.jpg</file>
++        <file>tree.jpg</file>
++        <file>pureback.webp</file>
++        <file>confused.png</file>
++        <file>emoticon.png</file>
++        <file>mod.jpg</file>
++    </qresource>
++</RCC>
+diff --git a/analyse.cpp b/analyse.cpp
+new file mode 100644
+index 0000000..3497c71
+--- /dev/null
++++ b/analyse.cpp
+@@ -0,0 +1,225 @@
++#include "analyse.h"
++
++
++bool analyse(Element* ele){
++    for(int i=0;i<2;i++){
++        if(ele[i].E <= 0 || ele[i].v <=-1 || ele[i].t <= 0 || ele[i].v >0.5) return false;
++    }
++
++    const int row = 8;
++    const int col = row+1;//value col == 9
++    double** K = new double* [row]();
++    double** K0 = new double* [row-2]();
++    double** K1 = new double* [row-2]();
++    for(int i = 0; i < row; i++) {
++        K[i] = new double[col]();
++    }
++    for(int i=0;i<row-2;i++){
++        K0[i] = new double[col-3]();
++        K1[i] = new double[col-3]();
++    }
++
++
++
++    double r0 = ele[0].E*ele[0].t/4/ele[0].A/(1-ele[0].v*ele[0].v);
++    double r1 = ele[1].E*ele[1].t/4/ele[1].A/(1-ele[1].v*ele[1].v);
++
++    //下面分别构造出两单元的单刚度矩阵K0,K1  6x6
++    for(int i=0;i<3;i++){
++        for(int j=0;j<3;j++){
++            K0[2*i][2*j] = ele[0].eq_b[i]*ele[0].eq_b[j]+(1-ele[0].v)/2*ele[0].eq_c[i]*ele[0].eq_c[j];K0[2*i][2*j]*=r0;
++            K0[2*i][2*j+1] = ele[0].v*ele[0].eq_b[i]*ele[0].eq_c[j]+(1-ele[0].v)/2*ele[0].eq_c[i]*ele[0].eq_b[j];K0[2*i][2*j+1]*=r0;
++            K0[2*i+1][2*j] = ele[0].v*ele[0].eq_c[i]*ele[0].eq_b[j]+(1-ele[0].v)/2*ele[0].eq_b[i]*ele[0].eq_c[j];K0[2*i+1][2*j]*=r0;
++            K0[2*i+1][2*j+1] = ele[0].eq_c[i]*ele[0].eq_c[j]+(1-ele[0].v)/2*ele[0].eq_b[i]*ele[0].eq_b[j];K0[2*i+1][2*j+1]*=r0;
++            K1[2*i][2*j] = ele[1].eq_b[i]*ele[1].eq_b[j]+(1-ele[1].v)/2*ele[1].eq_c[i]*ele[1].eq_c[j];K1[2*i][2*j]*=r1;
++            K1[2*i][2*j+1] = ele[1].v*ele[1].eq_b[i]*ele[1].eq_c[j]+(1-ele[1].v)/2*ele[1].eq_c[i]*ele[1].eq_b[j];K1[2*i][2*j+1]*=r1;
++            K1[2*i+1][2*j] = ele[1].v*ele[1].eq_c[i]*ele[1].eq_b[j]+(1-ele[1].v)/2*ele[1].eq_b[i]*ele[1].eq_c[j];K1[2*i+1][2*j]*=r1;
++            K1[2*i+1][2*j+1] = ele[1].eq_c[i]*ele[1].eq_c[j]+(1-ele[1].v)/2*ele[1].eq_b[i]*ele[1].eq_b[j];K1[2*i+1][2*j+1]*=r1;
++        }
++    }
++    //下面构造出矩形的总刚度矩阵K  8x8
++    //并入K0
++    for(int i=0;i<2;i++){
++        for(int j=0;j<2;j++){
++            K[2*i][2*j] += K0[2*i][2*j];
++            K[2*i][2*j+1] += K0[2*i][2*j+1];
++            K[2*i+1][2*j] += K0[2*i+1][2*j];
++            K[2*i+1][2*j+1] += K0[2*i+1][2*j+1];
++        }
++        K[2*i][6] += K0[2*i][4];
++        K[2*i][7] += K0[2*i][5];
++        K[2*i+1][6] += K0[2*i+1][4];
++        K[2*i+1][7] += K0[2*i+1][5];
++    }
++    for(int i=0;i<2;i++){
++         K[6][2*i] += K0[4][2*i];
++         K[6][2*i+1] += K0[4][2*i+1];
++         K[7][2*i] += K0[5][2*i];
++         K[7][2*i+1] += K0[5][2*i+1];
++    }
++    K[6][6] += K0[4][4];
++    K[6][7] += K0[4][5];
++    K[7][6] += K0[5][4];
++    K[7][7] += K0[5][5];
++    //并入K1
++    for(int i=1;i<4;i++){
++        for(int j=1;j<4;j++){
++            K[2*i][2*j] += K1[2*(i-1)][2*(j-1)];
++            K[2*i][2*j+1] += K1[2*(i-1)][2*(j-1)+1];
++            K[2*i+1][2*j] += K1[2*(i-1)+1][2*(j-1)];
++            K[2*i+1][2*j+1] += K1[2*(i-1)+1][2*(j-1)+1];
++        }
++    }
++    //总刚度矩阵K构造完成
++    double flist[row];
++    for(int i=0;i<4;i++){
++        flist[2*i] = ele[0].nodes[i].fx+ele[1].nodes[i].fx;
++        flist[2*i+1] = ele[0].nodes[i].fy+ele[1].nodes[i].fy;
++        if(ele[0].nodes[i].isvalid&&ele[1].nodes[i].isvalid){
++            flist[2*i] /= 2;
++            flist[2*i+1] /= 2;
++        }
++    }
++    for(int i=0;i<row;i++){
++        K[i][8] = flist[i];
++    }
++    //加上位移边界条件,将矩阵改成可解矩阵:这里已知delta 0,1,3都为0//
++    for(int j=0;j<row;j++){
++        K[0][j] = 0;
++        K[1][j] = 0;
++        K[3][j] = 0;
++        K[j][0] = 0;
++        K[j][1] = 0;
++        K[j][3] = 0;
++    }
++    K[0][8] = 0;
++    K[1][8] = 0;
++    K[3][8] = 0;
++    K[0][0] = 1;
++    K[1][1] = 1;
++    K[3][3] = 1;
++    //边界条件加载完成
++
++    double* tempdelta = new double[row]();
++    decoding_matrix(K,row,col,tempdelta);
++    //delta求解结果置于临时空间tempdelta[8]内,下面将其存入单元属性
++    for(int i=0;i<row;i++){
++        if(qIsNaN(*(tempdelta+i)))  return false;
++    }
++    ele[0].delta[0] = *(tempdelta);
++    ele[0].delta[1] = *(tempdelta+1);
++    ele[0].delta[2] = *(tempdelta+2);
++    ele[0].delta[3] = *(tempdelta+3);
++    ele[0].delta[4] = *(tempdelta+6);
++    ele[0].delta[5] = *(tempdelta+7);
++    ele[1].delta[0] = *(tempdelta+2);
++    ele[1].delta[1] = *(tempdelta+3);
++    ele[1].delta[2] = *(tempdelta+4);
++    ele[1].delta[3] = *(tempdelta+5);
++    ele[1].delta[4] = *(tempdelta+6);
++    ele[1].delta[5] = *(tempdelta+7);
++    delete [] tempdelta;
++    for(int i=0;i<row;i++){
++        delete K[i];
++    }
++    delete [] K;
++    //下一步要计算区域内部的应变关系//
++    double** B0 = new double* [3]();
++    double** B1 = new double* [3]();
++    for(int i=0;i<3;i++){
++        B0[i] = new double[6]();
++        B1[i] = new double[6]();
++    }
++    //构造B矩阵
++    double ratio0 = 1.0/2.0/ele[0].A;
++    double ratio1 = 1.0/2.0/ele[1].A;
++    for(int j=0;j<3;j++){
++        B0[0][2*j] = ratio0*ele[0].eq_b[j];B0[0][2*j+1] = 0;
++        B0[1][2*j] = 0;B0[1][2*j+1] = ratio0*ele[0].eq_c[j];
++        B0[2][2*j] = ratio0*ele[0].eq_c[j];B0[0][2*j+1] = ratio0*ele[0].eq_b[j];
++        B1[0][2*j] = ratio1*ele[1].eq_b[j];B1[0][2*j+1] = 0;
++        B1[1][2*j] = 0;B1[1][2*j+1] = ratio1*ele[1].eq_c[j];
++        B1[2][2*j] = ratio1*ele[1].eq_c[j];B1[0][2*j+1] = ratio1*ele[1].eq_b[j];
++    }
++    //B矩阵构造完成，调用求解函数求解应变关系//
++    double** temp_epson0 = new double*[3]();
++    double** temp_epson1 = new double*[3]();
++    double** delta0 = new double*[6]();
++    double** delta1 = new double*[6]();
++    for(int i=0;i<6;i++){
++        if(i<3){
++            temp_epson0[i] = new double();
++            temp_epson1[i] = new double();
++            }
++        delta0[i] = new double();
++        delta0[i][0] = ele[0].delta[i];
++        delta1[i] = new double();
++        delta1[i][0] = ele[1].delta[i];
++    }
++    matrix_multiplication(B0,delta0,3,6,6,1,temp_epson0);
++    matrix_multiplication(B1,delta1,3,6,6,1,temp_epson1);
++    for(int i=0;i<3;i++){
++        if(qIsNaN(temp_epson0[i][0]) || qIsNaN(temp_epson1[i][0]))  return false;
++    }
++    //下面将结果存入单元属性
++    for(int i=0;i<3;i++){
++        ele[0].epson[i] = temp_epson0[i][0];
++        ele[1].epson[i] = temp_epson1[i][0];
++    }
++    for(int i=0;i<6;i++){
++        delete delta0[i];
++        delete delta1[i];
++    }
++    delete [] delta0;
++    delete [] delta1;
++
++    //下一步要计算区域内部的应力关系//
++    double** D0 = new double* [3]();
++    double** D1 = new double* [3]();
++    double** temp_sigma0 = new double*[3]();
++    double** temp_sigma1 = new double*[3]();
++        for(int i=0;i<3;i++){
++            D0[i] = new double[3]();
++            D1[i] = new double[3]();
++            temp_sigma0[i] = new double();
++            temp_sigma1[i] = new double();
++        }
++        //构造D矩阵
++        double ra0 = ele[0].E/(1-ele[0].v*ele[0].v);
++        double ra1 = ele[1].E/(1-ele[1].v*ele[1].v);
++        D0[0][0] = D0[1][1] = 1*ra0;
++        D0[0][1] = D0[1][0] = ele[0].v*ra0;
++        D0[0][2] = D0[2][0] = D0[1][2] = D0[2][1] = 0;
++        D0[2][2] = (1-ele[0].v)/2*ra0;
++        D1[0][0] = D1[1][1] = 1*ra1;
++        D1[0][1] = D1[1][0] = ele[1].v*ra1;
++        D1[0][2] = D1[2][0] = D1[1][2] = D1[2][1] = 0;
++        D1[2][2] = (1-ele[1].v)/2*ra1;
++        //D矩阵构造完成//
++        //求解区域内部的应力关系
++        matrix_multiplication(D0,temp_epson0,3,3,3,1,temp_sigma0);
++        matrix_multiplication(D1,temp_epson1,3,3,3,1,temp_sigma1);
++        for(int i=0;i<3;i++){
++           if(qIsNaN(temp_sigma0[i][0]) || qIsNaN(temp_sigma1[i][0]))  return false;
++        }
++        //将结果存入单元属性
++        for(int i=0;i<3;i++){
++            ele[0].sigma[i] = temp_sigma0[i][0];
++            ele[1].sigma[i] = temp_sigma1[i][0];
++        }
++        for(int i=0;i<3;i++){
++            delete temp_epson0[i];
++            delete temp_epson1[i];
++            delete temp_sigma0[i];
++            delete temp_sigma1[i];
++        }
++        delete [] temp_epson0;
++        delete [] temp_epson1;
++        delete [] temp_sigma0;
++        delete [] temp_sigma1;
++        //释放无用内存
++    return true;
++}
++
++
++
+diff --git a/analyse.h b/analyse.h
+new file mode 100644
+index 0000000..ebc2e16
+--- /dev/null
++++ b/analyse.h
+@@ -0,0 +1,9 @@
++#ifndef ANALYSE_H
++#define ANALYSE_H
++#include "element.h"
++#include "opration.h"
++#include "matrix_decode.h"
++#include "matrix_multi.h"
++#endif // ANALYSE_H
++
++bool analyse(Element* ele);
+diff --git a/bird.jpg b/bird.jpg
+new file mode 100644
+index 0000000..16cc961
+Binary files /dev/null and b/bird.jpg differ
+diff --git a/cartoon.jpg b/cartoon.jpg
+new file mode 100644
+index 0000000..de6b123
+Binary files /dev/null and b/cartoon.jpg differ
+diff --git a/confused.png b/confused.png
+new file mode 100644
+index 0000000..0ec14b1
+Binary files /dev/null and b/confused.png differ
+diff --git a/element.cpp b/element.cpp
+new file mode 100644
+index 0000000..6b27ff6
+--- /dev/null
++++ b/element.cpp
+@@ -0,0 +1,19 @@
++#include "element.h"
++
++Element::Element()
++{
++    E = 0;
++    v = 0;
++    t = 0;
++    A = 0;
++    for(int i=0;i<6;i++){
++        delta[i] = 0;
++        if(i<3){
++            epson[i] = 0;
++            sigma[i] = 0;
++            eq_a[i] = 0;
++            eq_b[i] = 0;
++            eq_c[i] = 0;
++        }
++    }
++}
+diff --git a/element.h b/element.h
+new file mode 100644
+index 0000000..d1f5619
+--- /dev/null
++++ b/element.h
+@@ -0,0 +1,23 @@
++#ifndef ELEMENT_H
++#define ELEMENT_H
++#include "node.h"
++
++class Element
++{
++public:
++    Element();
++    Node* nodes;
++    Node eq_nodes[3];
++    double delta[6];
++    double epson[3];
++    double sigma[3];
++    double eq_a[3];
++    double eq_b[3];
++    double eq_c[3];
++    double E;
++    double v;
++    double t;
++    double A;
++};
++
++#endif // ELEMENT_H
+diff --git a/emoticon.png b/emoticon.png
+new file mode 100644
+index 0000000..3553c9c
+Binary files /dev/null and b/emoticon.png differ
+diff --git a/main.cpp b/main.cpp
+new file mode 100644
+index 0000000..2f66780
+--- /dev/null
++++ b/main.cpp
+@@ -0,0 +1,36 @@
++#include "mainwindow.h"
++#include <qsplashscreen.h>
++#include <QApplication>
++#include <QDateTime>
++#include <QDesktopWidget>
++
++
++
++int main(int argc, char *argv[])
++{
++    setbuf(stdout,NULL);
++    QApplication a(argc, argv);
++
++    //加载开机动画
++    QDesktopWidget* desktop = QApplication::desktop();
++    QPixmap pixmap(":/sun.jpg");
++    QSplashScreen splash(pixmap);
++    splash.setFixedSize(1158,660);
++    splash.setWindowOpacity(0.8);
++    splash.setFont(QFont("microsoft yahei", 12, QFont::Bold));
++    splash.move((desktop->width() - 1158)/ 2, (desktop->height() - 660) /2);
++    splash.show();
++    splash.showMessage("程序正在加载......", Qt::AlignCenter, Qt::blue);
++    QDateTime time = QDateTime::currentDateTime();
++    QDateTime currentTime = QDateTime::currentDateTime(); //记录当前时间
++    while (time.secsTo(currentTime) <= 4) // 5为需要延时的秒数
++    {
++        currentTime = QDateTime::currentDateTime();
++        a.processEvents();
++    };
++    MainWindow w;
++    w.show();
++    //主程序启动 开机动画结束
++    splash.finish((&w));
++    return a.exec();
++}
+diff --git a/mainwindow.cpp b/mainwindow.cpp
+new file mode 100644
+index 0000000..5f8550f
+--- /dev/null
++++ b/mainwindow.cpp
+@@ -0,0 +1,259 @@
++#include "mainwindow.h"
++
++
++QVector<QLineEdit*> linelist;//打包输入框栏
++QVector<QTextBrowser*> rstlist;//打包结果标签栏
++Opration op;
++Element* ele;
++
++MainWindow::MainWindow(QWidget *parent)
++    : QMainWindow(parent)
++    , ui(new Ui::MainWindow)
++{
++    ui->setupUi(this);
++    setWindowFlags(windowFlags()&~Qt::WindowMaximizeButtonHint);    // 禁止最大化按钮
++    setFixedSize(this->width(),this->height());                     // 禁止拖动窗口大小
++
++    rstlist.push_back(ui->strain0);
++    rstlist.push_back(ui->strain1);
++    rstlist.push_back(ui->stress0);
++    rstlist.push_back(ui->stress1);
++
++    ui->loadbox->hide();
++    ui->resultbox->hide();
++    ui->Eline->setPlaceholderText("输入参数E:");
++    ui->vline->setPlaceholderText("输入参数v:");
++    ui->tline->setPlaceholderText("输入参数t:");
++    linelist.push_back(ui->n0xline);
++    linelist.push_back(ui->n0yline);
++    linelist.push_back(ui->n1xline);
++    linelist.push_back(ui->n1yline);
++    linelist.push_back(ui->n2xline);
++    linelist.push_back(ui->n2yline);
++    linelist.push_back(ui->n3xline);
++    linelist.push_back(ui->n3yline);
++    linelist.push_back(ui->Eline);
++    linelist.push_back(ui->tline);
++    linelist.push_back(ui->vline);
++    connect(ui->exitbtn,SIGNAL(clicked()),this,SLOT(exitbtn_clicked()));
++    connect(ui->loadbtn,SIGNAL(clicked()),this,SLOT(loadbtn_clicked()));
++    connect(ui->analysebtn,SIGNAL(clicked()),this,SLOT(analysebtn_clicked()));
++}
++
++MainWindow::~MainWindow()
++{
++    delete ui;
++}
++
++
++void MainWindow::exitbtn_clicked()
++{
++    this->close();
++}
++
++void MainWindow::loadbtn_clicked()
++{
++    for(int i=0;i<linelist.size();i++){
++        linelist[i]->clear();
++    }
++    op.setmodel(ui->modelBox->currentText());
++    if(op.getmodel() == "矩形"){
++        ui->loadbox->show();
++        ui->resultbox->show();
++        ui->resultpage->hide();
++        QRegExp exp("^-?[0-9\\.]+$");
++        QValidator *v = new QRegExpValidator(exp);
++        for(int i=0;i<linelist.size();i++){
++            linelist[i]->setValidator(v);
++        }//设置输入框只允许输入实数
++        op.setloaddone(true);
++    }else{
++        QMessageBox box;
++        QPixmap img(":/confused.png");
++        QIcon icon = QIcon(img);
++        box.setWindowTitle("option");
++        box.setWindowIcon(icon);
++        box.setIcon(QMessageBox::Information);
++        box.setStyleSheet("color:blue");
++        box.setText("加载失败");
++        ui->loadbox->hide();
++        ui->resultbox->hide();
++        op.setloaddone(false);
++        box.exec();
++    }
++}
++
++void MainWindow::analysebtn_clicked()
++{
++    if(op.isload()){
++    //这里就是加载成功之后的计算、分析模块:
++        if(op.getmodel() == "矩形"){
++        ele = new Element[2]();
++        ele[0].nodes = new Node[4]();
++        ele[1].nodes = new Node[4]();
++        ele[0].nodes[2].isvalid = false;
++        ele[1].nodes[0].isvalid = false;
++        for(int j=0;j<2;j++){
++            ele[j].E = ui->Eline->text().toDouble();
++            ele[j].v = ui->vline->text().toDouble();
++            ele[j].t = ui->tline->text().toDouble();
++            for(int i=0;i<4;i++){
++                if(ele[j].nodes[i].isvalid){
++                ele[j].nodes[i].fx = linelist[2*i]->text().toDouble();
++                ele[j].nodes[i].fy = linelist[2*i+1]->text().toDouble();
++                }
++            }
++        }
++        //设定单元结点、面积等参数
++        ele[0].nodes[0].x = 0;
++        ele[0].nodes[0].y = 0;
++        ele[0].nodes[1].x = 1;
++        ele[0].nodes[1].y = 0;
++        ele[0].nodes[3].x = 0;
++        ele[0].nodes[3].y = 1;
++        ele[1].nodes[1].x = 1;
++        ele[1].nodes[1].y = 0;
++        ele[1].nodes[2].x = 1;
++        ele[1].nodes[2].y = 1;
++        ele[1].nodes[3].x = 0;
++        ele[1].nodes[3].y = 1;
++
++        //建立单元等效结点
++        ele[0].eq_nodes[0] = *(ele[0].nodes);
++        ele[0].eq_nodes[1] = *(ele[0].nodes+1);
++        ele[0].eq_nodes[2] = *(ele[0].nodes+3);
++        ele[1].eq_nodes[0] = *(ele[1].nodes+1);
++        ele[1].eq_nodes[1] = *(ele[1].nodes+2);
++        ele[1].eq_nodes[2] = *(ele[1].nodes+3);
++        ele[0].A = (ele[0].eq_nodes[0].x*ele[0].eq_nodes[1].y+ele[0].eq_nodes[1].x*ele[0].eq_nodes[2].y+ele[0].eq_nodes[2].x*ele[0].eq_nodes[0].y
++                -ele[0].eq_nodes[2].x*ele[0].eq_nodes[1].y-ele[0].eq_nodes[1].x*ele[0].eq_nodes[0].y-ele[0].eq_nodes[0].x*ele[0].eq_nodes[2].y)/2;//A为单元面积
++        ele[1].A = (ele[1].eq_nodes[0].x*ele[1].eq_nodes[1].y+ele[1].eq_nodes[1].x*ele[1].eq_nodes[2].y+ele[1].eq_nodes[2].x*ele[1].eq_nodes[0].y
++                -ele[1].eq_nodes[2].x*ele[1].eq_nodes[1].y-ele[1].eq_nodes[1].x*ele[1].eq_nodes[0].y-ele[1].eq_nodes[0].x*ele[1].eq_nodes[2].y)/2;
++
++        for(int m=0;m<3;m++){
++            ele[0].eq_a[m] = ele[0].eq_nodes[(m+1)%3].x*ele[0].eq_nodes[(m+2)%3].y-ele[0].eq_nodes[(m+2)%3].x*ele[0].eq_nodes[(m+1)%3].y;
++            ele[1].eq_a[m] = ele[1].eq_nodes[(m+1)%3].x*ele[1].eq_nodes[(m+2)%3].y-ele[1].eq_nodes[(m+2)%3].x*ele[1].eq_nodes[(m+1)%3].y;
++            ele[0].eq_b[m] = ele[0].eq_nodes[(m+1)%3].y - ele[0].eq_nodes[(m+2)%3].y;
++            ele[0].eq_c[m] = ele[0].eq_nodes[(m+2)%3].x - ele[0].eq_nodes[(m+1)%3].x;
++            ele[1].eq_b[m] = ele[1].eq_nodes[(m+1)%3].y - ele[1].eq_nodes[(m+2)%3].y;
++            ele[1].eq_c[m] = ele[1].eq_nodes[(m+2)%3].x - ele[1].eq_nodes[(m+1)%3].x;
++        }
++
++        //调用分析方法计算结果
++        if(analyse(ele)){
++
++            //下面调取各单元delta属性对指定点求位移,另通过ui显示分析结果
++            QString strain0 = QString::number(ele[0].epson[0],'f',3) + ", " + QString::number(ele[0].epson[1],'f',3) +
++                    ", " + QString::number(ele[0].epson[2],'f',3);
++            QString strain1 = QString::number(ele[1].epson[0],'f',3) + ", " + QString::number(ele[1].epson[1],'f',3) +
++                    ", " + QString::number(ele[1].epson[2],'f',3);
++            QString stress0 = QString::number(ele[0].sigma[0],'f',3) + ", " + QString::number(ele[0].sigma[1],'f',3) +
++                    ", " + QString::number(ele[0].sigma[2],'f',3);
++            QString stress1 = QString::number(ele[1].sigma[0],'f',3) + ", " + QString::number(ele[1].sigma[1],'f',3) +
++                    ", " + QString::number(ele[1].sigma[2],'f',3);
++            ui->strain0->setText(strain0);
++            ui->strain1->setText(strain1);
++            ui->stress0->setText(stress0);
++            ui->stress1->setText(stress1);
++            ui->resultpage->setTabText(0,"单元0");
++            ui->resultpage->setTabText(1,"单元1");
++            ui->resultpage->setTabShape(QTabWidget::Triangular);
++            //求指定结点2,3位移向量
++            double n2[3],n3[3],n3_[3];
++            for(int i=0;i<3;i++){
++                n2[i] = (1.0/2.0/ele[1].A)*(ele[1].eq_a[i]+ele[1].eq_b[i]*ele[1].nodes[2].x+ele[1].eq_c[i]*ele[1].nodes[2].y);
++                n3[i] = (1.0/2.0/ele[1].A)*(ele[1].eq_a[i]+ele[1].eq_b[i]*ele[1].nodes[3].x+ele[1].eq_c[i]*ele[1].nodes[3].y);
++                n3_[i] = (1.0/2.0/ele[0].A)*(ele[0].eq_a[i]+ele[0].eq_b[i]*ele[0].nodes[3].x+ele[0].eq_c[i]*ele[0].nodes[3].y);
++            }
++            //N矩阵构造//
++            double** N2 = new double*[2]();
++            double** N3 = new double*[2]();
++            double** N3_ = new double*[2]();
++            for(int i=0;i<2;i++){
++                N2[i] = new double[6]();
++                N3[i] = new double[6]();
++                N3_[i] = new double[6]();
++            }
++            for(int j=0;j<3;j++){
++                *(*(N2+0)+2*j) = n2[j];*(*(N2+0)+2*j+1) = 0;
++                *(*(N2+1)+2*j) = 0;*(*(N2+1)+2*j+1) = n2[j];
++                *(*(N3+0)+2*j) = n3[j];*(*(N3+0)+2*j+1) = 0;
++                *(*(N3+1)+2*j) = 0;*(*(N3+1)+2*j+1) = n3[j];
++                *(*(N3_+0)+2*j) = n3_[j];*(*(N3_+0)+2*j+1) = 0;
++                *(*(N3_+1)+2*j) = 0;*(*(N3_+1)+2*j+1) = n3_[j];
++            }
++            //N矩阵构造完成//
++            double** tempdelta0 = new double*[6]();
++            double** tempdelta1 = new double*[6]();
++            double** disp2 = new double*[2]();
++            double** disp3 = new double*[2]();
++            double** disp3_ = new double*[2]();
++            for(int i=0;i<6;i++){
++                tempdelta0[i] = new double();
++                tempdelta1[i] = new double();
++                if(i<3){
++                    disp2[i] = new double();
++                    disp3[i] = new double();
++                    disp3_[i] = new double();
++                }
++            }
++            for(int i=0;i<6;i++){
++                tempdelta0[i][0] = ele[0].delta[i];
++                tempdelta1[i][0] = ele[1].delta[i];
++            }
++            matrix_multiplication(N2,tempdelta1,2,6,6,1,disp2);
++            matrix_multiplication(N3,tempdelta1,2,6,6,1,disp3);
++            matrix_multiplication(N3_,tempdelta0,2,6,6,1,disp3_);
++            for(int i=0;i<2;i++){
++                disp3[i][0] = (disp3[i][0]+disp3_[i][0])/2.0;
++            }
++            //位移求解完成
++            QString dispnode2 = "结点2位移为:" + QString::number(disp2[0][0],'f',3) + ", " + QString::number(disp2[1][0],'f',3) + "\n";
++            QString dispnode3 = "结点3位移为:" + QString::number(disp3[0][0],'f',3) + ", " + QString::number(disp3[1][0],'f',3) + "\n";
++            QMessageBox boxt;
++            boxt.setIcon(QMessageBox::Information);
++            boxt.setText(QString(dispnode2).append(dispnode3));
++            boxt.setTextInteractionFlags(Qt::TextSelectableByMouse);//设置该对话框文本可复制
++            QFont font;font.setPointSize(10);
++            boxt.setFont(font);
++
++            QMessageBox box;
++            QPixmap img(":/emoticon.png");
++            QIcon icon = QIcon(img);
++            box.setWindowTitle("option");
++            box.setWindowIcon(icon);
++            box.setIcon(QMessageBox::Information);
++            box.setStyleSheet("color:blue");
++            box.setText("分析完成");
++            box.exec();
++            ui->resultpage->show();
++            boxt.exec();
++        }else{
++            QMessageBox box;
++            QPixmap img(":/confused.png");
++            QIcon icon = QIcon(img);
++            box.setWindowTitle("option");
++            box.setWindowIcon(icon);
++            box.setIcon(QMessageBox::Information);
++            box.setStyleSheet("color:blue");
++            box.setText("分析失败");
++            box.exec();
++        }
++
++        }
++
++    }else{
++        QMessageBox box;
++        QPixmap img(":/confused.png");
++        QIcon icon = QIcon(img);
++        box.setWindowTitle("option");
++        box.setWindowIcon(icon);
++        box.setIcon(QMessageBox::Information);
++        box.setStyleSheet("color:blue");
++        box.setText("未加载模型");
++        ui->loadbox->hide();
++        ui->resultbox->hide();
++        op.setloaddone(false);
++        box.exec();
++    }
++}
+diff --git a/mainwindow.h b/mainwindow.h
+new file mode 100644
+index 0000000..815c7a2
+--- /dev/null
++++ b/mainwindow.h
+@@ -0,0 +1,30 @@
++#ifndef MAINWINDOW_H
++#define MAINWINDOW_H
++#include <QMessageBox>
++#include <QMainWindow>
++#include "opration.h"
++#include "analyse.h"
++#include <QFont>
++#include "ui_mainwindow.h"
++QT_BEGIN_NAMESPACE
++namespace Ui { class MainWindow; }
++QT_END_NAMESPACE
++
++class MainWindow : public QMainWindow
++{
++    Q_OBJECT
++
++public:
++
++    MainWindow(QWidget *parent = nullptr);
++    ~MainWindow();
++
++private slots:
++    void exitbtn_clicked();
++    void analysebtn_clicked();
++    void loadbtn_clicked();
++
++private:
++    Ui::MainWindow *ui;
++};
++#endif // MAINWINDOW_H
+diff --git a/mainwindow.ui b/mainwindow.ui
+new file mode 100644
+index 0000000..9867b02
+--- /dev/null
++++ b/mainwindow.ui
+@@ -0,0 +1,641 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<ui version="4.0">
++ <class>MainWindow</class>
++ <widget class="QMainWindow" name="MainWindow">
++  <property name="geometry">
++   <rect>
++    <x>0</x>
++    <y>0</y>
++    <width>1158</width>
++    <height>660</height>
++   </rect>
++  </property>
++  <property name="windowTitle">
++   <string>MainWindow</string>
++  </property>
++  <property name="styleSheet">
++   <string notr="true">background-image: url(:/bird.jpg);</string>
++  </property>
++  <widget class="QWidget" name="centralwidget">
++   <widget class="QLabel" name="apptitle">
++    <property name="geometry">
++     <rect>
++      <x>430</x>
++      <y>0</y>
++      <width>261</width>
++      <height>61</height>
++     </rect>
++    </property>
++    <property name="styleSheet">
++     <string notr="true">font: 75 14pt &quot;Arial&quot;;</string>
++    </property>
++    <property name="text">
++     <string>Finite Element Application</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="modellabel">
++    <property name="geometry">
++     <rect>
++      <x>0</x>
++      <y>80</y>
++      <width>71</width>
++      <height>41</height>
++     </rect>
++    </property>
++    <property name="styleSheet">
++     <string notr="true">font: 75 10pt &quot;Arial&quot;;
++background-color: rgb(170, 255, 255);
++color: rgb(255, 85, 0);</string>
++    </property>
++    <property name="text">
++     <string>选择模型</string>
++    </property>
++   </widget>
++   <widget class="QComboBox" name="modelBox">
++    <property name="geometry">
++     <rect>
++      <x>0</x>
++      <y>130</y>
++      <width>71</width>
++      <height>22</height>
++     </rect>
++    </property>
++    <property name="styleSheet">
++     <string notr="true">background-color: rgb(170, 170, 255);</string>
++    </property>
++    <item>
++     <property name="text">
++      <string>矩形</string>
++     </property>
++    </item>
++    <item>
++     <property name="text">
++      <string>其他</string>
++     </property>
++    </item>
++   </widget>
++   <widget class="QPushButton" name="loadbtn">
++    <property name="geometry">
++     <rect>
++      <x>0</x>
++      <y>190</y>
++      <width>71</width>
++      <height>28</height>
++     </rect>
++    </property>
++    <property name="styleSheet">
++     <string notr="true">color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 178, 102, 255), stop:0.55 rgba(235, 148, 61, 255), stop:0.98 rgba(0, 0, 0, 255), stop:1 rgba(0, 0, 0, 0));</string>
++    </property>
++    <property name="text">
++     <string>点击加载</string>
++    </property>
++   </widget>
++   <widget class="QGroupBox" name="loadbox">
++    <property name="geometry">
++     <rect>
++      <x>70</x>
++      <y>80</y>
++      <width>461</width>
++      <height>431</height>
++     </rect>
++    </property>
++    <property name="title">
++     <string/>
++    </property>
++    <widget class="QFrame" name="modelimg">
++     <property name="geometry">
++      <rect>
++       <x>60</x>
++       <y>90</y>
++       <width>211</width>
++       <height>231</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">image: url(:/mod.jpg);</string>
++     </property>
++     <property name="frameShape">
++      <enum>QFrame::StyledPanel</enum>
++     </property>
++     <property name="frameShadow">
++      <enum>QFrame::Raised</enum>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="n0xline">
++     <property name="geometry">
++      <rect>
++       <x>60</x>
++       <y>330</y>
++       <width>81</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++    <widget class="QLabel" name="n0x">
++     <property name="geometry">
++      <rect>
++       <x>10</x>
++       <y>330</y>
++       <width>41</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">font: 75 10pt &quot;Arial&quot;;
++background-image: url(:/pureback.webp);
++</string>
++     </property>
++     <property name="text">
++      <string>Fx=</string>
++     </property>
++    </widget>
++    <widget class="QLabel" name="n0y">
++     <property name="geometry">
++      <rect>
++       <x>10</x>
++       <y>380</y>
++       <width>41</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);
++font: 75 10pt &quot;Arial&quot;;</string>
++     </property>
++     <property name="text">
++      <string>Fy=</string>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="n0yline">
++     <property name="geometry">
++      <rect>
++       <x>60</x>
++       <y>380</y>
++       <width>81</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++    <widget class="QLabel" name="n1x">
++     <property name="geometry">
++      <rect>
++       <x>250</x>
++       <y>330</y>
++       <width>41</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">font: 75 10pt &quot;Arial&quot;;
++background-image: url(:/pureback.webp);</string>
++     </property>
++     <property name="text">
++      <string>Fx=</string>
++     </property>
++    </widget>
++    <widget class="QLabel" name="n1y">
++     <property name="geometry">
++      <rect>
++       <x>250</x>
++       <y>380</y>
++       <width>41</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">font: 75 10pt &quot;Arial&quot;;
++background-image: url(:/pureback.webp);</string>
++     </property>
++     <property name="text">
++      <string>Fy=</string>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="n1xline">
++     <property name="geometry">
++      <rect>
++       <x>310</x>
++       <y>330</y>
++       <width>81</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="n1yline">
++     <property name="geometry">
++      <rect>
++       <x>310</x>
++       <y>380</y>
++       <width>81</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++    <widget class="QLabel" name="n2x">
++     <property name="geometry">
++      <rect>
++       <x>250</x>
++       <y>10</y>
++       <width>41</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);
++font: 75 10pt &quot;Arial&quot;;</string>
++     </property>
++     <property name="text">
++      <string>Fx=</string>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="n2xline">
++     <property name="geometry">
++      <rect>
++       <x>310</x>
++       <y>10</y>
++       <width>81</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++    <widget class="QLabel" name="n2y">
++     <property name="geometry">
++      <rect>
++       <x>250</x>
++       <y>50</y>
++       <width>41</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);
++font: 75 10pt &quot;Arial&quot;;</string>
++     </property>
++     <property name="text">
++      <string>Fy=</string>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="n2yline">
++     <property name="geometry">
++      <rect>
++       <x>310</x>
++       <y>50</y>
++       <width>81</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++    <widget class="QLabel" name="n3x">
++     <property name="geometry">
++      <rect>
++       <x>10</x>
++       <y>10</y>
++       <width>41</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);
++font: 75 10pt &quot;Arial&quot;;</string>
++     </property>
++     <property name="text">
++      <string>Fx=</string>
++     </property>
++    </widget>
++    <widget class="QLabel" name="n3y">
++     <property name="geometry">
++      <rect>
++       <x>10</x>
++       <y>50</y>
++       <width>41</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">font: 75 10pt &quot;Arial&quot;;
++background-image: url(:/pureback.webp);</string>
++     </property>
++     <property name="text">
++      <string>Fy=</string>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="n3xline">
++     <property name="geometry">
++      <rect>
++       <x>60</x>
++       <y>10</y>
++       <width>81</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="n3yline">
++     <property name="geometry">
++      <rect>
++       <x>60</x>
++       <y>50</y>
++       <width>81</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="Eline">
++     <property name="geometry">
++      <rect>
++       <x>310</x>
++       <y>100</y>
++       <width>101</width>
++       <height>41</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="vline">
++     <property name="geometry">
++      <rect>
++       <x>310</x>
++       <y>160</y>
++       <width>101</width>
++       <height>41</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++    <widget class="QLineEdit" name="tline">
++     <property name="geometry">
++      <rect>
++       <x>310</x>
++       <y>220</y>
++       <width>101</width>
++       <height>41</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">background-image: url(:/pureback.webp);</string>
++     </property>
++    </widget>
++   </widget>
++   <widget class="QGroupBox" name="resultbox">
++    <property name="geometry">
++     <rect>
++      <x>530</x>
++      <y>80</y>
++      <width>451</width>
++      <height>431</height>
++     </rect>
++    </property>
++    <property name="title">
++     <string/>
++    </property>
++    <widget class="QLabel" name="resulttip">
++     <property name="geometry">
++      <rect>
++       <x>10</x>
++       <y>10</y>
++       <width>421</width>
++       <height>31</height>
++      </rect>
++     </property>
++     <property name="styleSheet">
++      <string notr="true">font: 75 10pt &quot;Arial&quot;;</string>
++     </property>
++     <property name="text">
++      <string>分析结果如下:</string>
++     </property>
++    </widget>
++    <widget class="QTabWidget" name="resultpage">
++     <property name="geometry">
++      <rect>
++       <x>0</x>
++       <y>50</y>
++       <width>451</width>
++       <height>261</height>
++      </rect>
++     </property>
++     <property name="mouseTracking">
++      <bool>false</bool>
++     </property>
++     <property name="tabletTracking">
++      <bool>false</bool>
++     </property>
++     <property name="acceptDrops">
++      <bool>false</bool>
++     </property>
++     <property name="whatsThis">
++      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
++     </property>
++     <property name="tabShape">
++      <enum>QTabWidget::Triangular</enum>
++     </property>
++     <property name="currentIndex">
++      <number>0</number>
++     </property>
++     <widget class="QWidget" name="page0">
++      <attribute name="title">
++       <string/>
++      </attribute>
++      <widget class="QLabel" name="label">
++       <property name="geometry">
++        <rect>
++         <x>0</x>
++         <y>80</y>
++         <width>121</width>
++         <height>51</height>
++        </rect>
++       </property>
++       <property name="styleSheet">
++        <string notr="true">font: 75 10pt &quot;Arial&quot;;</string>
++       </property>
++       <property name="text">
++        <string>单元0应变大小：</string>
++       </property>
++      </widget>
++      <widget class="QLabel" name="label_2">
++       <property name="geometry">
++        <rect>
++         <x>0</x>
++         <y>160</y>
++         <width>121</width>
++         <height>51</height>
++        </rect>
++       </property>
++       <property name="styleSheet">
++        <string notr="true">font: 75 10pt &quot;Arial&quot;;</string>
++       </property>
++       <property name="text">
++        <string>单元0应力大小：</string>
++       </property>
++      </widget>
++      <widget class="QTextBrowser" name="strain0">
++       <property name="geometry">
++        <rect>
++         <x>140</x>
++         <y>80</y>
++         <width>301</width>
++         <height>51</height>
++        </rect>
++       </property>
++       <property name="styleSheet">
++        <string notr="true">font: 75 12pt &quot;Arial&quot;;</string>
++       </property>
++      </widget>
++      <widget class="QTextBrowser" name="stress0">
++       <property name="geometry">
++        <rect>
++         <x>140</x>
++         <y>160</y>
++         <width>301</width>
++         <height>51</height>
++        </rect>
++       </property>
++       <property name="styleSheet">
++        <string notr="true">font: 75 12pt &quot;Arial&quot;;</string>
++       </property>
++      </widget>
++     </widget>
++     <widget class="QWidget" name="page1">
++      <attribute name="title">
++       <string/>
++      </attribute>
++      <widget class="QLabel" name="label_3">
++       <property name="geometry">
++        <rect>
++         <x>0</x>
++         <y>80</y>
++         <width>121</width>
++         <height>51</height>
++        </rect>
++       </property>
++       <property name="styleSheet">
++        <string notr="true">font: 75 10pt &quot;Arial&quot;;</string>
++       </property>
++       <property name="text">
++        <string>单元1应变大小：</string>
++       </property>
++      </widget>
++      <widget class="QLabel" name="label_4">
++       <property name="geometry">
++        <rect>
++         <x>0</x>
++         <y>160</y>
++         <width>121</width>
++         <height>51</height>
++        </rect>
++       </property>
++       <property name="styleSheet">
++        <string notr="true">font: 75 10pt &quot;Arial&quot;;</string>
++       </property>
++       <property name="text">
++        <string>单元1应力大小：</string>
++       </property>
++      </widget>
++      <widget class="QTextBrowser" name="strain1">
++       <property name="geometry">
++        <rect>
++         <x>140</x>
++         <y>80</y>
++         <width>301</width>
++         <height>51</height>
++        </rect>
++       </property>
++       <property name="styleSheet">
++        <string notr="true">font: 75 12pt &quot;Arial&quot;;</string>
++       </property>
++      </widget>
++      <widget class="QTextBrowser" name="stress1">
++       <property name="geometry">
++        <rect>
++         <x>140</x>
++         <y>160</y>
++         <width>301</width>
++         <height>51</height>
++        </rect>
++       </property>
++       <property name="styleSheet">
++        <string notr="true">font: 75 12pt &quot;Arial&quot;;</string>
++       </property>
++      </widget>
++     </widget>
++    </widget>
++   </widget>
++   <widget class="QPushButton" name="analysebtn">
++    <property name="geometry">
++     <rect>
++      <x>430</x>
++      <y>520</y>
++      <width>93</width>
++      <height>41</height>
++     </rect>
++    </property>
++    <property name="styleSheet">
++     <string notr="true">color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 178, 102, 255), stop:0.55 rgba(235, 148, 61, 255), stop:0.98 rgba(0, 0, 0, 255), stop:1 rgba(0, 0, 0, 0));</string>
++    </property>
++    <property name="text">
++     <string>开始分析</string>
++    </property>
++   </widget>
++   <widget class="QPushButton" name="exitbtn">
++    <property name="geometry">
++     <rect>
++      <x>540</x>
++      <y>520</y>
++      <width>93</width>
++      <height>41</height>
++     </rect>
++    </property>
++    <property name="styleSheet">
++     <string notr="true">color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 178, 102, 255), stop:0.55 rgba(235, 148, 61, 255), stop:0.98 rgba(0, 0, 0, 255), stop:1 rgba(0, 0, 0, 0));</string>
++    </property>
++    <property name="text">
++     <string>退出</string>
++    </property>
++   </widget>
++   <widget class="QLabel" name="author">
++    <property name="geometry">
++     <rect>
++      <x>900</x>
++      <y>600</y>
++      <width>261</width>
++      <height>41</height>
++     </rect>
++    </property>
++    <property name="styleSheet">
++     <string notr="true">font: 10pt &quot;Ink Free&quot;;</string>
++    </property>
++    <property name="text">
++     <string>Created by Zihao-Cai @20221211</string>
++    </property>
++   </widget>
++  </widget>
++  <widget class="QStatusBar" name="statusbar"/>
++ </widget>
++ <resources/>
++ <connections/>
++</ui>
+diff --git a/matrix_decode.cpp b/matrix_decode.cpp
+new file mode 100644
+index 0000000..284013e
+--- /dev/null
++++ b/matrix_decode.cpp
+@@ -0,0 +1,67 @@
++#include <stdlib.h>
++#include <stdio.h>
++#include "matrix_decode.h"
++void decoding_matrix(double** data,const int row, const int col,double* result) {
++
++    double **temple_data = new double* [row]();
++    for (int k = 0; k < row; k++) { temple_data[k] = new double[col](); }
++
++    for (int m = 0; m < row; m++) {
++        for (int n = 0; n < col; n++) { *(* (temple_data + m) + n) = *(*(data + m) + n); }
++    }/*use a temple array to protect the source data array in parent*/
++
++    /*loops to transformation the matrix*/
++    for (int r = 0; r <= col - 3; r++) {//按列从左向右
++        //从下向上消元前做一次首元置换操作,将最大数值首元找出置换到r行,此举有利于提高求解精确度
++        int maxindex = r;
++        for(int n=r;n<row;n++){
++            if(qAbs(*(*(temple_data + n) + r)) > qAbs(*(*(temple_data + r) + r)))   maxindex = n;
++        }
++        if(maxindex != r){
++            for(int j=0;j<col;j++){
++                double tm = *(*(temple_data + r) + j);
++                *(*(temple_data + r) + j) = *(*(temple_data + maxindex) + j);
++                *(*(temple_data + maxindex) + j) = tm;
++            }
++
++        }
++        //置换完毕,此时r行是数值最大首元行
++        for (int i = row - 1; i >= r+1; i--) {//按行从下向上
++            if (*(*(temple_data + i) + r) == 0) { continue; }//元素为0则跳过继续向上
++            else {
++                double k = (*(*(temple_data + i) + r)) /(*(*(temple_data + r) + r));
++                for (int j = 0; j < col; j++) {
++                    *(*(temple_data + i) + j) = *(*(temple_data + i) + j) - k*(*(*(temple_data + r) + j));
++                }
++                /*decrease first elements to 0 from each row*/
++            }
++        }
++
++
++    }       /*finished operations for transformation data matrix to a triangle matrix*/
++
++
++    for (int i = 0; i < row; i++) {
++        for (int j = 0; j < i; j++) {
++            *(*(temple_data + i) + j) = 0;
++        }
++    }/*this loop is aimed to decrease the probably happened redundant non-0  to 0 in triangle matrix without changing other numbers existed*/
++
++    double sum = 0;
++    for (int i = row - 1, n = 0; i >= 0; i--, n++) {
++        if (i == row - 1) { *(result+i) = *(*(temple_data + i) + col-1) / *(*(temple_data + i) + col - 2); }
++        else {
++            for (int k = 1; k <= n; k++) {
++                sum += *(result+i+k) *( * (*(temple_data + i) + i + k));
++            }
++            *(result+i) = (*(*(temple_data + i) + col - 1) - sum) / *(*(temple_data + i) + i);
++            sum = 0;
++        }
++    }/*here,all results gotten are located into array result*/
++
++    for (int i = 0; i < row; i++) {
++        delete temple_data[i];
++    }delete[]temple_data;//relesae the old memory
++
++    return;
++}
+diff --git a/matrix_decode.h b/matrix_decode.h
+new file mode 100644
+index 0000000..0eb7549
+--- /dev/null
++++ b/matrix_decode.h
+@@ -0,0 +1,6 @@
++#ifndef MATRIX_DECODE_H
++#define MATRIX_DECODE_H
++#include <QtGlobal>
++#endif // MATRIX_DECODE_H
++
++void decoding_matrix(double** data,const int row, const int col,double* result);
+diff --git a/matrix_multi.cpp b/matrix_multi.cpp
+new file mode 100644
+index 0000000..279b491
+--- /dev/null
++++ b/matrix_multi.cpp
+@@ -0,0 +1,18 @@
++#include "matrix_multi.h"
++#include <iostream>
++void matrix_multiplication(double** m1, double** m2,const int row1,const int col1,const int row2, const int col2,double** result) {
++    //注意矩阵相乘结果应该是size m1 X col m2 的形式,即result要作考虑
++
++    if (col1 != row2) { return; }
++    for (int i = 0; i < row1; i++) {
++        for (int j = 0; j < col2; j++) {
++            for (int k = 0; k < col1; k++) {
++                *(*(result + i) + j) += (*(*(m1 + i) + k)) * (*(*(m2 + k) + j));
++            }
++        }
++    }
++
++
++
++
++}
+diff --git a/matrix_multi.h b/matrix_multi.h
+new file mode 100644
+index 0000000..3aa582c
+--- /dev/null
++++ b/matrix_multi.h
+@@ -0,0 +1,6 @@
++#ifndef MATRIX_MULTI_H
++#define MATRIX_MULTI_H
++
++#endif // MATRIX_MULTI_H
++void matrix_multiplication(double** m1, double** m2,const int row1, const int col1, const int row2,const int col2, double** result);
++//注意矩阵相乘结果应该是size m1 X col m2 的形式,即result要作考虑
+diff --git a/mod.jpg b/mod.jpg
+new file mode 100644
+index 0000000..2c9775c
+Binary files /dev/null and b/mod.jpg differ
+diff --git a/node.cpp b/node.cpp
+new file mode 100644
+index 0000000..ae55fde
+--- /dev/null
++++ b/node.cpp
+@@ -0,0 +1,7 @@
++#include "node.h"
++
++Node::Node()
++{
++    x=y=fx=fy=0;
++    isvalid = true;
++}
+diff --git a/node.h b/node.h
+new file mode 100644
+index 0000000..e8ef26f
+--- /dev/null
++++ b/node.h
+@@ -0,0 +1,16 @@
++#ifndef NODE_H
++#define NODE_H
++
++
++class Node
++{
++public:
++    Node();
++    bool isvalid;
++    double x;
++    double y;
++    double fx;
++    double fy;
++};
++
++#endif // NODE_H
+diff --git a/opration.cpp b/opration.cpp
+new file mode 100644
+index 0000000..f4ca0d4
+--- /dev/null
++++ b/opration.cpp
+@@ -0,0 +1,26 @@
++#include "opration.h"
++
++Opration::Opration()
++{
++    loaddone = false;
++    model = "";
++}
++
++QString Opration::getmodel(){
++    return this->model;
++}
++
++
++bool Opration::setmodel(QString str){
++    this->model = str;
++    return true;
++}
++
++bool Opration::isload(){
++    return this->loaddone;
++}
++
++bool Opration::setloaddone(bool flag){
++    this->loaddone = flag;
++    return true;
++}
+diff --git a/opration.h b/opration.h
+new file mode 100644
+index 0000000..d129841
+--- /dev/null
++++ b/opration.h
+@@ -0,0 +1,18 @@
++#ifndef OPRATION_H
++#define OPRATION_H
++#include <QString>
++
++class Opration
++{
++    QString model;
++    bool loaddone;
++public:
++    Opration();
++    QString getmodel();
++    bool setmodel(QString str);
++    bool isload();
++    bool setloaddone(bool flag);
++
++};
++
++#endif // OPRATION_H
+diff --git a/pureback.webp b/pureback.webp
+new file mode 100644
+index 0000000..bcf7bd4
+Binary files /dev/null and b/pureback.webp differ
+diff --git a/sun.jpg b/sun.jpg
+new file mode 100644
+index 0000000..030beed
+Binary files /dev/null and b/sun.jpg differ
+diff --git a/tree.jpg b/tree.jpg
+new file mode 100644
+index 0000000..27d48a1
+Binary files /dev/null and b/tree.jpg differ
